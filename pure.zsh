@@ -23,6 +23,16 @@
 # \e[K  => clears everything after the cursor on the current line
 # \e[2K => clear everything on the current line
 
+# vi-mode cursor shapes
+function zle-line-init zle-line-finish zle-keymap-select {
+  case $KEYMAP in
+    vicmd)      echo -ne "\e[2 q";; # block cursor
+    viins|main) echo -ne "\e[6 q";; # line cursor
+  esac
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
 
 # Turns seconds into human readable time.
 # 165392 => 1d 21h 56m 32s
