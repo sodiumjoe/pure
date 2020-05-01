@@ -168,24 +168,28 @@ prompt_pure_preprompt_render() {
 	# Execution time.
 	[[ -n $prompt_pure_cmd_exec_time ]] && preprompt_parts+=('%F{$prompt_pure_colors[execution_time]}${prompt_pure_cmd_exec_time}%f')
 
-	local cleaned_ps1=$PROMPT
-	local -H MATCH MBEGIN MEND
-	if [[ $PROMPT = *$prompt_newline* ]]; then
-		# Remove everything from the prompt until the newline. This
-		# removes the preprompt and only the original PROMPT remains.
-		cleaned_ps1=${PROMPT##*${prompt_newline}}
-	fi
-	unset MATCH MBEGIN MEND
+	local prompt_indicator='%(?.%F{$prompt_pure_colors[prompt:success]}.%F{$prompt_pure_colors[prompt:error]})${prompt_pure_state[prompt]}%f '
+	preprompt_parts+=$prompt_indicator
+
+	# local cleaned_ps1=$PROMPT
+	# local -H MATCH MBEGIN MEND
+	# if [[ $PROMPT = *$prompt_newline* ]]; then
+	# 	# Remove everything from the prompt until the newline. This
+	# 	# removes the preprompt and only the original PROMPT remains.
+	# 	cleaned_ps1=${PROMPT##*${prompt_newline}}
+	# fi
+	# unset MATCH MBEGIN MEND
 
 	# Construct the new prompt with a clean preprompt.
-	local -ah ps1
-	ps1=(
-		${(j. .)preprompt_parts}  # Join parts, space separated.
-		$prompt_newline           # Separate preprompt and prompt.
-		$cleaned_ps1
-	)
+	# local -ah ps1
+	# ps1=(
+	# 	${(j. .)preprompt_parts}  # Join parts, space separated.
+	# 	$prompt_newline           # Separate preprompt and prompt.
+	# 	$cleaned_ps1
+	# )
 
-	PROMPT="${(j..)ps1}"
+	# PROMPT="${(j..)ps1}"
+	PROMPT="${(j. .)preprompt_parts}"
 
 	# Expand the prompt for future comparision.
 	local expanded_prompt
@@ -758,10 +762,10 @@ prompt_pure_setup() {
 	# initialized via `promptinit`.
 	setopt noprompt{bang,cr,percent,subst} "prompt${^prompt_opts[@]}"
 
-	if [[ -z $prompt_newline ]]; then
-		# This variable needs to be set, usually set by promptinit.
-		typeset -g prompt_newline=$'\n%{\r%}'
-	fi
+	# if [[ -z $prompt_newline ]]; then
+	# 	# This variable needs to be set, usually set by promptinit.
+	# 	typeset -g prompt_newline=$'\n%{\r%}'
+	# fi
 
 	zmodload zsh/datetime
 	zmodload zsh/zle
