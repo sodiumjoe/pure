@@ -128,6 +128,14 @@ prompt_pure_set_colors() {
 	done
 }
 
+clean_branch() {
+  local branch="${prompt_pure_vcs_info[branch]}"
+	local user=$USER
+  branch="${branch/master/⌂}"
+  branch="${branch/${user}\//}"
+  print $branch
+}
+
 prompt_pure_preprompt_render() {
 	setopt localoptions noshwordsplit
 
@@ -152,9 +160,9 @@ prompt_pure_preprompt_render() {
 	if [[ -n $prompt_pure_vcs_info[branch] ]]; then
 		# preprompt_parts+=("%F{$git_color}"'${prompt_pure_vcs_info[branch]}'"%F{$git_dirty_color}"'${prompt_pure_git_dirty}%f')
 		if [[ -v $prompt_pure_git_dirty ]]; then
-			preprompt_parts+=("%F{$git_dirty_color}"'${prompt_pure_vcs_info[branch]}'"%F{$git_dirty_color}"'%f')
+			preprompt_parts+=("%F{$git_dirty_color}"'$(clean_branch)'"%F{$git_dirty_color}"'%f')
 		else
-			preprompt_parts+=("%F{$git_color}"'${prompt_pure_vcs_info[branch]}'"%F{$git_dirty_color}"'%f')
+			preprompt_parts+=("%F{$git_color}"'$(clean_branch)'"%F{$git_dirty_color}"'%f')
 		fi
 	fi
 	# Git action (for example, merge).
